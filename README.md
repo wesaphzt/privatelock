@@ -4,7 +4,6 @@
 
 [<img alt="Get it on F-Droid" height="75" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.wesaphzt.privatelock/)
 
-[description]
 A simple app to automatically lock your phone based on movement force, or the acceleration to be more accurate.
 
 Private Lock can help protect your privacy and security by monitoring the accelerometer in the background and if the threshold is breached, lock the screen.
