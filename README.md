@@ -33,9 +33,13 @@ Device admin permission for locking screen.
 
 ## Permissions
 android.permission.RECEIVE_BOOT_COMPLETED (start on boot)
+
 android.permission.WAKE_LOCK (start on boot)
+
 android.permission.BIND_DEVICE_ADMIN (lock the screen)
+
 android.permission.FOREGROUND_SERVICE (run the service)
+
 android.permission.BIND_JOB_SERVICE (run the service)
 
 ## Issues
