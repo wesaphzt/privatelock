@@ -1,6 +1,6 @@
 # Private Lock
 <a href="https://github.com/wesaphzt/privatelock/releases/latest" alt="GitHub Release"><img src="https://img.shields.io/github/release/wesaphzt/privatelock.svg?logo=github"></a>
-[![License](https://img.shields.io/github/license/wesaphzt/privatelock.svg)](LICENSE)
+[![License](https://img.shields.io/github/license/wesaphzt/privatelock.svg?color=green)](LICENSE)
 
 [<img alt="Get it on F-Droid" height="75" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.wesaphzt.privatelock/)
 
