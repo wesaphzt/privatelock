@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_10sdp"
+        tools:ignore="UselessParent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_margin_large">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_margin="@dimen/activity_margin">
+
+                <TextView
+                    android:id="@+id/tvSensitivityTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_lock_sensitivity_title"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvSensitivityHigh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/main_lock_sensitivity_title_high"
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="italic"/>
+
+                    <TextView
+                        android:id="@+id/tvSensitivityTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/main_lock_sensitivity_title_arrow"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/tvSensitivityLow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="end"
+                        android:text="@string/main_lock_sensitivity_title_low"
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="italic"
+                        tools:ignore="RelativeOverlap" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_margin"
+            android:layout_marginEnd="@dimen/activity_margin">
+
+            <TextView
+                android:id="@+id/tvSensitivityMinValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="@string/main_seek_low"
+                android:textSize="@dimen/_12sdp" />
+
+            <SeekBar
+                android:id="@+id/sbSensitivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/_25sdp"
+                android:paddingEnd="@dimen/_30sdp"
+                android:max="40" >
+            </SeekBar>
+
+            <TextView
+                android:id="@+id/tvSensitivityMaxValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:gravity="end"
+                android:text="@string/main_seek_high"
+                android:textSize="@dimen/_12sdp"
+                tools:ignore="RelativeOverlap" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/tvSensitivityActualValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_margin"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="italic|bold"
+            android:text=""
+            android:gravity="center" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_large">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_margin="@dimen/activity_margin">
+
+                <TextView
+                    android:id="@+id/tvTestTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_test_lock_sensitivity_title"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/activity_margin_large"
+            android:layout_gravity="center_horizontal">
+
+            <com.wesaphzt.privatelock.animation.Circle
+                android:id="@+id/circle_bg"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_centerHorizontal="true" />
+
+            <com.wesaphzt.privatelock.animation.Circle
+                android:id="@+id/circle"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>

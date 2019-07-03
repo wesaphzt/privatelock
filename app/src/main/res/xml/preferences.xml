@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Lock Service">
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/array_pause_minutes"
+            android:entryValues="@array/array_pause_minutes_vals"
+            android:key="PAUSE_TIME"
+            android:summary="%s"
+            android:title="Pause time" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Application">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="START_ON_BOOT"
+            android:title="System start" />
+    </PreferenceCategory>
+</PreferenceScreen>
