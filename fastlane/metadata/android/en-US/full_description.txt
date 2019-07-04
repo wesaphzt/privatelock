@@ -1,0 +1,8 @@
+A simple app to automatically lock your phone based on movement force, or the acceleration to be more accurate.
+
+Private Lock can help protect your privacy and security by monitoring the accelerometer in the background and if the threshold is breached, lock the screen.
+
+The main use cases are if your phone is taken while you're using it, or you drop your phone.
+As an additional bonus, it can also help save wear and tear on your power button!
+
+Inspired by the abandoned [https://github.com/0xFireball/PluckLockEx PluckLockEx] project, which is based on [https://github.com/SyntaxBlitz/PluckLock PluckLock].
