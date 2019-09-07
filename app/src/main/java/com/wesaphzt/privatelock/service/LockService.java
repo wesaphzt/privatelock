@@ -31,6 +31,7 @@ import com.wesaphzt.privatelock.receivers.NotificationReceiver;
 import com.wesaphzt.privatelock.receivers.PauseReceiver;
 import com.wesaphzt.privatelock.receivers.PresenceReceiver;
 
+import static androidx.core.app.NotificationCompat.PRIORITY_LOW;
 import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
 
 public class LockService extends JobIntentService {
@@ -206,6 +207,7 @@ public class LockService extends JobIntentService {
                     .setTicker(getString(R.string.app_name) + " is running")
                     .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", pendingCloseIntent)
                     .addAction(android.R.drawable.ic_menu_close_clear_cancel, "PAUSE", pendingPauseIntent)
+                    .setPriority(PRIORITY_LOW)
                     .setOngoing(true)
                     .build();
 
@@ -221,6 +223,7 @@ public class LockService extends JobIntentService {
                     .setTicker(getString(R.string.app_name) + " is running")
                     .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", pendingCloseIntent)
                     .addAction(android.R.drawable.ic_menu_close_clear_cancel, "PAUSE", pendingPauseIntent)
+                    .setPriority(PRIORITY_LOW)
                     .setOngoing(true)
                     .build();
         }
