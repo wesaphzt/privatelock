@@ -13,14 +13,13 @@ public class Circle extends View {
     private static final int START_ANGLE_POINT = 90;
 
     private final Paint paint;
-    private final RectF rect;
+    private RectF rect;
 
     private float angle;
+    private final int strokeWidth = 10;
 
     public Circle(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        final int strokeWidth = 10;
 
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -29,8 +28,8 @@ public class Circle extends View {
         //circle color (currently set upon instance)
         //paint.setColor(Color.BLUE);
 
-        //size
-        rect = new RectF(strokeWidth, strokeWidth, 600 + strokeWidth, 600 + strokeWidth);
+        //size (currently set upon instance)
+        //rect = new RectF(strokeWidth, strokeWidth, 230 + strokeWidth, 230 + strokeWidth);
 
         //initial angle (optional)
         angle = 0;
@@ -52,5 +51,13 @@ public class Circle extends View {
 
     public void setAngle(float angle) {
         this.angle = angle;
+    }
+
+    public void setRect(int right, int bottom) {
+        this.rect = new RectF(strokeWidth, strokeWidth, right, bottom);
+    }
+
+    public float getRect() {
+        return rect.right;
     }
 }

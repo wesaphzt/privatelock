@@ -142,22 +142,24 @@
         </androidx.cardview.widget.CardView>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/rlCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_margin_large"
             android:layout_gravity="center_horizontal">
 
             <com.wesaphzt.privatelock.animation.Circle
                 android:id="@+id/circle_bg"
-                android:layout_width="240dp"
-                android:layout_height="240dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal" />
 
             <com.wesaphzt.privatelock.animation.Circle
                 android:id="@+id/circle"
-                android:layout_width="240dp"
-                android:layout_height="240dp"
-                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:gravity="center_horizontal" />
 
         </RelativeLayout>

@@ -22,10 +22,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,9 +127,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //https://stackoverflow.com/questions/29381474/how-to-draw-a-circle-with-animation-in-android-with-circle-size-based-on-a-value
         circle = findViewById(R.id.circle);
         circle_bg = findViewById(R.id.circle_bg);
+
+        final RelativeLayout relativeLayout = findViewById(R.id.content_main);
+        final RelativeLayout rlCircle = findViewById(R.id.rlCircle);
+
+        //scale height/width of animation
+        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+
+                    @Override
+                    public void onGlobalLayout() {
+                        //only want to do this once
+                        relativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                        circle.setRect((circle.getHeight() / 2), (circle.getHeight()) / 2);
+                        circle_bg.setRect((circle_bg.getHeight() / 2), (circle_bg.getHeight()) / 2);
+
+                        circle.setX((rlCircle.getWidth() - circle.getRect()) / 2);
+                        circle_bg.setX((rlCircle.getWidth() - circle.getRect()) / 2);
+                    }
+                });
+
 
         circle.setColor(circleDefaultR, circleDefaultG, circleDefaultB);
         //set background circle
