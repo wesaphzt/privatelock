@@ -16,12 +16,13 @@
     <string name="sensitivity_value">Value: %1$s</string>
 
     <!--intro-->
-    <string name="slider_page_one_title">Private Lock</string>
+    <string name="slider_page_one_title">@string/app_name</string>
     <string name="slider_page_one_desc">Private Lock, the perfect companion to help protect your phone privacy and security.</string>
-    <string name="slider_page_two_title">Protect against theft</string>
+    <string name="slider_page_two_title">Protect Against Theft</string>
     <string name="slider_page_two_desc">If someone takes your phone while you\'re using it, your phone is unlocked and all your private data is up for grabs.</string>
-    <string name="slider_page_three_title">Always running</string>
-    <string name="slider_page_three_desc">Should something happen, your phone will be quickly locked, dependent on the sensitivity you\'ve set.</string>
+    <string name="slider_page_three_title">Always Running</string>
+    <string name="slider_page_three_desc">Should something happen, your phone will be quickly locked, dependent on the sensitivity you\'ve set.
+        \n\nDon\'t forget to disable battery optimization!</string>
 
     <!--actionbar-->
     <string name="action_start">Start</string>
