@@ -1,6 +1,5 @@
 package com.wesaphzt.privatelock.widget;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -14,12 +13,6 @@ import android.widget.RemoteViews;
 
 import com.wesaphzt.privatelock.service.LockService;
 import com.wesaphzt.privatelock.R;
-import com.wesaphzt.privatelock.receivers.PauseReceiver;
-
-import static com.wesaphzt.privatelock.service.LockService.CHANNEL_ID;
-import static com.wesaphzt.privatelock.service.LockService.activeListener;
-import static com.wesaphzt.privatelock.service.LockService.disabled;
-import static com.wesaphzt.privatelock.service.LockService.mSensorManager;
 
 public class LockWidgetProvider extends AppWidgetProvider {
 
@@ -72,33 +65,14 @@ public class LockWidgetProvider extends AppWidgetProvider {
                 editor.putBoolean(context.getString(R.string.widget_prefs_service_id), false);
                 editor.apply();
 
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                Intent stopIntent  = new Intent(context, LockService.class);
+                stopIntent.setAction(LockService.ACTION_STOP_FOREGROUND_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    notificationManager.deleteNotificationChannel(CHANNEL_ID);
-                    //if countdown timer is running (pause), cancel
-                    if(PauseReceiver.isRunning) {
-                        PauseReceiver.mCountdown.cancel(); PauseReceiver.isRunning = false;
-                        disabled = true;
-                        mSensorManager.unregisterListener(activeListener);
-                        setWidgetStop(context);
-                    } else {
-                        disabled = true;
-                        mSensorManager.unregisterListener(activeListener);
-                        setWidgetStop(context);
-                    }
+                    context.startForegroundService(stopIntent);
+
                 } else {
-                    notificationManager.cancel(LockService.NOTIFICATION_ID);
-                    if(PauseReceiver.isRunning) {
-                        PauseReceiver.mCountdown.cancel(); PauseReceiver.isRunning = false;
-                        disabled = true;
-                        mSensorManager.unregisterListener(activeListener);
-                        setWidgetStop(context);
-                    } else {
-                        disabled = true;
-                        mSensorManager.unregisterListener(activeListener);
-                        setWidgetStop(context);
-                    }
+                    context.startService(stopIntent);
                 }
 
                 //if service is not running
@@ -106,15 +80,13 @@ public class LockWidgetProvider extends AppWidgetProvider {
                 editor.putBoolean(context.getString(R.string.widget_prefs_service_id), true);
                 editor.commit();
 
-                Intent i = new Intent(context, LockService.class);
+                Intent startIntent  = new Intent(context, LockService.class);
+                startIntent.setAction(LockService.ACTION_START_FOREGROUND_SERVICE);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    disabled = false;
-                    context.startForegroundService(i);
-                    setWidgetStart(context);
+                    context.startForegroundService(startIntent);
                 } else {
-                    disabled = false;
-                    context.startService(i);
-                    setWidgetStart(context);
+                    context.startService(startIntent);
                 }
             }
         }

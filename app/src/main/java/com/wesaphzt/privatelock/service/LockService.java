@@ -30,6 +30,7 @@ import com.wesaphzt.privatelock.receivers.DeviceAdminReceiver;
 import com.wesaphzt.privatelock.receivers.NotificationReceiver;
 import com.wesaphzt.privatelock.receivers.PauseReceiver;
 import com.wesaphzt.privatelock.receivers.PresenceReceiver;
+import com.wesaphzt.privatelock.widget.LockWidgetProvider;
 
 import static androidx.core.app.NotificationCompat.PRIORITY_LOW;
 import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
@@ -67,53 +68,115 @@ public class LockService extends JobIntentService {
     public static final int DEFAULT_SENSITIVITY = 10;
     public static int SENSITIVITY;
 
+    public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
+    public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
+
+    PresenceReceiver presenceReceiver;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         context = getApplicationContext();
         CHANNEL_ID = getString(R.string.notification_main_channel_id);
         CHANNEL_NAME = getString(R.string.notification_main_channel_name);
         //------------------------------------------------------------------------------------------
-        PresenceReceiver presenceReceiver = new PresenceReceiver();
+        if (intent != null) {
+            String action = intent.getAction();
 
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(presenceReceiver, intentFilter);
-        //------------------------------------------------------------------------------------------
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        try {
-            SENSITIVITY = prefs.getInt(MainActivity.PREFS_THRESHOLD, DEFAULT_SENSITIVITY);
-        } catch (Exception e) {
-            Toast.makeText(context, "Unable to retrieve threshold", Toast.LENGTH_LONG).show();
+            LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
 
-        }
-        //------------------------------------------------------------------------------------------
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            switch (action) {
 
-        //dpm
-        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mDeviceAdmin = new ComponentName(this, DeviceAdminReceiver.class);
+                case ACTION_START_FOREGROUND_SERVICE:
+                    presenceReceiver = new PresenceReceiver();
 
-        //prevent lock animation artifacts
-        mInitialized = false;
+                    IntentFilter intentFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
+                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                    registerReceiver(presenceReceiver, intentFilter);
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                    //------------------------------------------------------------------------------------------
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    try {
+                        SENSITIVITY = prefs.getInt(MainActivity.PREFS_THRESHOLD, DEFAULT_SENSITIVITY);
+                    } catch (Exception e) {
+                        Toast.makeText(context, "Unable to retrieve threshold", Toast.LENGTH_LONG).show();
+                    }
+                    //------------------------------------------------------------------------------------------
+                    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        setSensorListener();
-        mSensorManager.registerListener(activeListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                    //dpm
+                    mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    mDeviceAdmin = new ComponentName(this, DeviceAdminReceiver.class);
 
-        setNotification();
-        //------------------------------------------------------------------------------------------
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //create foreground service
-            startForeground(NOTIFICATION_ID, notification);
-            disabled = false;
+                    //prevent lock animation artifacts
+                    mInitialized = false;
 
+                    mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+                    mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+                    setSensorListener();
+                    mSensorManager.registerListener(activeListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+                    setNotification();
+                    //------------------------------------------------------------------------------------------
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        //create foreground service
+                        startForeground(NOTIFICATION_ID, notification);
+                        lockWidgetProvider.setWidgetStart(context);
+                        disabled = false;
+
+                    } else {
+                        notificationManager.notify(NOTIFICATION_ID, notification);
+                        lockWidgetProvider.setWidgetStart(context);
+                        disabled = false;
+                    }
+
+                    break;
+
+                case ACTION_STOP_FOREGROUND_SERVICE:
+                    try {
+                        unregisterReceiver(presenceReceiver);
+                        mSensorManager.unregisterListener(activeListener);
+
+                        disabled = true;
+                        mInitialized = false;
+
+                        if (PauseReceiver.isRunning) {
+                            PauseReceiver.mCountdown.cancel();
+                            PauseReceiver.isRunning = false;
+                        }
+                    } catch (Exception e) {
+                        disabled = true;
+                        mInitialized = false;
+
+                        if (PauseReceiver.isRunning) {
+                            PauseReceiver.mCountdown.cancel();
+                            PauseReceiver.isRunning = false;
+                        }
+                    }
+
+                    try {
+                        NotificationManager notificationManager =
+                                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            String id = context.getString(R.string.notification_main_channel_id);
+                            notificationManager.deleteNotificationChannel(id);
+                        } else {
+                            notificationManager.cancel(LockService.NOTIFICATION_ID);
+                        }
+                    } catch (Exception e) {
+                        lockWidgetProvider.setWidgetStop(context);
+                        stopService(intent);
+                    }
+
+                    lockWidgetProvider.setWidgetStop(context);
+                    stopService(intent);
+
+                    break;
+            }
         } else {
-            notificationManager.notify(NOTIFICATION_ID, notification);
-            disabled = false;
+            Toast.makeText(context, "Something went wrong...", Toast.LENGTH_LONG).show();
         }
-        //------------------------------------------------------------------------------------------
+
 
         return LockService.START_STICKY;
     }
@@ -125,6 +188,11 @@ public class LockService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {  }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
     private void setSensorListener() {
         activeListener = new SensorEventListener() {

@@ -37,7 +37,6 @@ import com.wesaphzt.privatelock.fragments.FragmentAbout;
 import com.wesaphzt.privatelock.fragments.FragmentDonate;
 import com.wesaphzt.privatelock.fragments.FragmentSettings;
 import com.wesaphzt.privatelock.receivers.DeviceAdminReceiver;
-import com.wesaphzt.privatelock.receivers.PauseReceiver;
 import com.wesaphzt.privatelock.service.LockService;
 import com.wesaphzt.privatelock.widget.LockWidgetProvider;
 
@@ -291,27 +290,12 @@ public class MainActivity extends AppCompatActivity {
     private void startServicePrep() {
         //stop this listener
         mSensorManager.unregisterListener(mActiveListener);
-        Intent intent = new Intent(context, LockService.class);
 
-        try {
-            //stop any already running service
-            LockService.mSensorManager.unregisterListener(LockService.activeListener);
-            startLockService(intent);
-            LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
-            lockWidgetProvider.setWidgetStart(context);
+        //start service intent
+        Intent startIntent  = new Intent(context, LockService.class);
+        startIntent.setAction(LockService.ACTION_START_FOREGROUND_SERVICE);
 
-            //cancel any pause timer that might be running
-            try {
-                PauseReceiver.mCountdown.cancel();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-            startLockService(intent);
-            LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
-            lockWidgetProvider.setWidgetStart(context);
-        }
+        startLockService(startIntent);
     }
 
     @Override
