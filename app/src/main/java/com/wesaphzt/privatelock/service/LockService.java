@@ -87,13 +87,11 @@ public class LockService extends JobIntentService {
 
             switch (action) {
                 case ACTION_START_FOREGROUND_SERVICE:
-                    if(! prefs.getBoolean("RUN_CONSTANT", false)) {
-                        presenceReceiver = new PresenceReceiver();
+                    presenceReceiver = new PresenceReceiver();
 
-                        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
-                        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                        registerReceiver(presenceReceiver, intentFilter);
-                    }
+                    IntentFilter intentFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
+                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                    registerReceiver(presenceReceiver, intentFilter);
                     //------------------------------------------------------------------------------------------
                     try {
                         SENSITIVITY = prefs.getInt(MainActivity.PREFS_THRESHOLD, DEFAULT_SENSITIVITY);
@@ -134,29 +132,19 @@ public class LockService extends JobIntentService {
 
                 case ACTION_STOP_FOREGROUND_SERVICE:
                     try {
-                        if(! prefs.getBoolean("RUN_CONSTANT", false)) {
-                            unregisterReceiver(presenceReceiver);
-                        }
                         mSensorManager.unregisterListener(activeListener);
-
-                        disabled = true;
-                        mInitialized = false;
-
-                        if (PauseReceiver.isRunning) {
-                            PauseReceiver.mCountdown.cancel();
-                            PauseReceiver.isRunning = false;
-                        }
                     } catch (Exception e) {
-                        if(! prefs.getBoolean("RUN_CONSTANT", false)) {
-                            unregisterReceiver(presenceReceiver);
-                        }
-                        disabled = true;
-                        mInitialized = false;
+                        e.printStackTrace();
+                    }
 
-                        if (PauseReceiver.isRunning) {
-                            PauseReceiver.mCountdown.cancel();
-                            PauseReceiver.isRunning = false;
-                        }
+                    unregisterReceiver(presenceReceiver);
+
+                    disabled = true;
+                    mInitialized = false;
+
+                    if (PauseReceiver.isRunning) {
+                        PauseReceiver.mCountdown.cancel();
+                        PauseReceiver.isRunning = false;
                     }
 
                     try {
@@ -169,8 +157,7 @@ public class LockService extends JobIntentService {
                             notificationManager.cancel(LockService.NOTIFICATION_ID);
                         }
                     } catch (Exception e) {
-                        lockWidgetProvider.setWidgetStop(context);
-                        stopService(intent);
+                        e.printStackTrace();
                     }
 
                     lockWidgetProvider.setWidgetStop(context);
