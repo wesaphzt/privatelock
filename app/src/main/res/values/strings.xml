@@ -62,6 +62,9 @@
 
     <string name="about_bug_report_image_desc">Bug report image</string>
 
+    <!--message-->
+    <string name="settings_restart_service_toast">If service is running, restart for setting to take effect.</string>
+
     <!--donate-->
     <string name="donate_bitcoin_image_desc">Bitcoin image</string>
     <string name="donate_litecoin_image_desc">Litecoin image</string>

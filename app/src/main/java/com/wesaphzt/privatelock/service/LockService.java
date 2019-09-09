@@ -83,18 +83,18 @@ public class LockService extends JobIntentService {
             String action = intent.getAction();
 
             LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
             switch (action) {
-
                 case ACTION_START_FOREGROUND_SERVICE:
-                    presenceReceiver = new PresenceReceiver();
+                    if(! prefs.getBoolean("RUN_CONSTANT", false)) {
+                        presenceReceiver = new PresenceReceiver();
 
-                    IntentFilter intentFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
-                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                    registerReceiver(presenceReceiver, intentFilter);
-
+                        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
+                        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                        registerReceiver(presenceReceiver, intentFilter);
+                    }
                     //------------------------------------------------------------------------------------------
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                     try {
                         SENSITIVITY = prefs.getInt(MainActivity.PREFS_THRESHOLD, DEFAULT_SENSITIVITY);
                     } catch (Exception e) {
@@ -134,7 +134,9 @@ public class LockService extends JobIntentService {
 
                 case ACTION_STOP_FOREGROUND_SERVICE:
                     try {
-                        unregisterReceiver(presenceReceiver);
+                        if(! prefs.getBoolean("RUN_CONSTANT", false)) {
+                            unregisterReceiver(presenceReceiver);
+                        }
                         mSensorManager.unregisterListener(activeListener);
 
                         disabled = true;
@@ -145,6 +147,9 @@ public class LockService extends JobIntentService {
                             PauseReceiver.isRunning = false;
                         }
                     } catch (Exception e) {
+                        if(! prefs.getBoolean("RUN_CONSTANT", false)) {
+                            unregisterReceiver(presenceReceiver);
+                        }
                         disabled = true;
                         mInitialized = false;
 

@@ -2,20 +2,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:title="Lock Service">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="START_ON_BOOT"
+            android:title="System start" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="RUN_CONSTANT"
+            android:title="Run service when locked"
+            android:summary="Run service all the time, even when the screen is off, to be able to force PIN entry at any time."/>
+
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/array_pause_minutes"
             android:entryValues="@array/array_pause_minutes_vals"
             android:key="PAUSE_TIME"
             android:summary="%s"
-            android:title="Pause time" />
-    </PreferenceCategory>
+            android:title="Pause length" />
 
-    <PreferenceCategory
-        android:title="Application">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="START_ON_BOOT"
-            android:title="System start" />
     </PreferenceCategory>
 </PreferenceScreen>

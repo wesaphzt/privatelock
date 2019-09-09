@@ -16,7 +16,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);;
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             if(prefs.getBoolean("START_ON_BOOT", false)) {
                 Intent i = new Intent(context, LockService.class);
 
