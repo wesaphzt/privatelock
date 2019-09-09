@@ -8,7 +8,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.wesaphzt.privatelock.service.LockService;
-import com.wesaphzt.privatelock.widget.LockWidgetProvider;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -18,17 +17,14 @@ public class BootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             if(prefs.getBoolean("START_ON_BOOT", false)) {
-                Intent i = new Intent(context, LockService.class);
+                Intent startIntent  = new Intent(context, LockService.class);
+                startIntent.setAction(LockService.ACTION_START_FOREGROUND_SERVICE);
 
                 //check android api
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(i);
-                    LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
-                    lockWidgetProvider.setWidgetStart(context);
+                    context.startForegroundService(startIntent);
                 } else {
-                    context.startService(i);
-                    LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
-                    lockWidgetProvider.setWidgetStart(context);
+                    context.startService(startIntent);
                 }
             }
         }
