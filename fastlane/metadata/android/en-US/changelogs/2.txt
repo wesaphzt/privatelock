@@ -1,0 +1,5 @@
+- Animation scaling issues fixed
+- Stop service correctly to fix memory leak & reduce code
+- Notification priority changed to low for Nougat and lower
+- Option added to run service when screen is off to be able to force PIN entry
+- Gradle & library updates
