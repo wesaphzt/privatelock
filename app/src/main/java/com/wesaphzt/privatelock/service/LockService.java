@@ -229,12 +229,19 @@ public class LockService extends JobIntentService {
 
             if (total > SENSITIVITY) {
                 try {
-                    mDPM.lockNow();
+                    if (isActiveAdmin()) {
+                        mDPM.lockNow();
+                    } else {
+                        Toast.makeText(context, "Device admin not enabled", Toast.LENGTH_LONG).show();
+                    }
                 } catch (Exception e) {
-                    Toast.makeText(context, "Error locking, does app have device admin permissions?", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Unknown locking error", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+    private boolean isActiveAdmin() {
+        return mDPM.isAdminActive(mDeviceAdmin);
     }
 
     private void setNotification() {
