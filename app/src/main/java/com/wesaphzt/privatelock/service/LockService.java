@@ -225,7 +225,7 @@ public class LockService extends JobIntentService {
             mLastY = y;
             mLastZ = z;
 
-            float total = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+            float total = (float) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
 
             if (total > SENSITIVITY) {
                 try {

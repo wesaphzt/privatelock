@@ -70,8 +70,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREFS_THRESHOLD = "THRESHOLD";
 
     private CountDownTimer cdTimer;
-    private final int cdTimerLength = 2000;
+    private final int cdTimerLength = 1500;
     private boolean isRunning = false;
+    private boolean isHit = false;
 
     private Circle circle;
     private Circle circle_bg;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
     //circle lock color
     private int circleLockR = 88; private int circleLockG = 255; private int circleLockB = 135;
     int animationDuration = 220;
+
+    CircleAngleAnimation animation;
 
     //first run
     final private String PREF_VERSION_CODE_KEY = "VERSION_CODE";
@@ -168,11 +171,14 @@ public class MainActivity extends AppCompatActivity {
 
         //timer when lock hit
         cdTimer = new CountDownTimer(cdTimerLength, 1000) {
+
             public void onTick(long millisUntilFinished) {
                 isRunning = true;
+                isHit = true;
             }
             public void onFinish() {
                 isRunning = false;
+                isHit = false;
                 circle.setColor(circleDefaultR, circleDefaultG, circleDefaultB);
             }
         };
@@ -425,35 +431,40 @@ public class MainActivity extends AppCompatActivity {
             mLastY = y;
             mLastZ = z;
 
-            float total = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+            float total = (float) Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
 
-            int calculatedAngleInt;
+            int calculatedAngleInt = 0;
 
-            if (total <= mSensitivity) {
-                //do nothing if timer currently running
+            if (total >= mSensitivity) {
+                //lock screen threshold hit
+
+                if(!isHit) {
+                    CircleAngleAnimation anim = new CircleAngleAnimation(circle, 360);
+                    circle.setColor(circleLockR, circleLockG, circleLockB);
+                    anim.setDuration(animationDuration);
+                    //set lock color
+                    circle.startAnimation(anim);
+
+                    isHit = true;
+                    cdTimer.start();
+                } else {
+                    if(!isRunning) {
+                        isRunning = true;
+                    }
+                }
+            } else {
                 if(isRunning)
+                    return;
+
+                if(isHit)
                     return;
 
                 calculatedAngleInt = Math.round((total / mSensitivity) * 360);
 
-                CircleAngleAnimation animation = new CircleAngleAnimation(circle, calculatedAngleInt);
+                animation = new CircleAngleAnimation(circle, calculatedAngleInt);
                 animation.setDuration(animationDuration);
                 circle.startAnimation(animation);
-            } else if (total > mSensitivity) {
-                //lock screen threshold hit
-                if(isRunning)
-                    //do nothing if timer currently running
-                    return;
-
-                CircleAngleAnimation animation = new CircleAngleAnimation(circle, 360);
-                animation.setDuration(animationDuration);
-                //set lock color
-                circle.setColor(circleLockR, circleLockG, circleLockB);
-                circle.startAnimation(animation);
-
-                cdTimer.start();
             }
         }
     }
-
 }
