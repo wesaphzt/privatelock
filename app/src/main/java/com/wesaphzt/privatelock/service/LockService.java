@@ -15,12 +15,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -31,6 +34,8 @@ import com.wesaphzt.privatelock.receivers.NotificationReceiver;
 import com.wesaphzt.privatelock.receivers.PauseReceiver;
 import com.wesaphzt.privatelock.receivers.PresenceReceiver;
 import com.wesaphzt.privatelock.widget.LockWidgetProvider;
+
+import java.util.Objects;
 
 import static androidx.core.app.NotificationCompat.PRIORITY_LOW;
 import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
@@ -72,6 +77,13 @@ public class LockService extends JobIntentService {
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
 
     PresenceReceiver presenceReceiver;
+
+    //check to stop multiple triggers
+    boolean isHit = false;
+
+    //vibrate
+    boolean isHaptic = false;
+    private final int vibrateTime = 100;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -193,6 +205,11 @@ public class LockService extends JobIntentService {
                 if(LockService.disabled)
                     return;
 
+                //check prefs here so options can be changed without service restart
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+                isHaptic = prefs.getBoolean("HAPTIC_FEEDBACK", false);
+
                 sensorCalc(event);
             }
 
@@ -230,7 +247,28 @@ public class LockService extends JobIntentService {
             if (total > SENSITIVITY) {
                 try {
                     if (isActiveAdmin()) {
-                        mDPM.lockNow();
+
+                        if(!isHaptic) {
+                            mDPM.lockNow();
+                        } else { //if haptic
+                            if(!isHit) { //run if not triggered yet
+                                isHit = true;
+
+                                mDPM.lockNow();
+                                vibrateItBaby();
+
+                                //stop multiple haptic triggers in a row
+                                new CountDownTimer(1000, 1000) {
+                                    public void onTick(long millisUntilFinished) {
+                                        isHit = true;
+                                    }
+                                    public void onFinish() {
+                                        isHit = false;
+                                    }
+                                }.start();
+                            }
+                        }
+
                     } else {
                         Toast.makeText(context, "Device admin not enabled", Toast.LENGTH_LONG).show();
                     }
@@ -240,6 +278,15 @@ public class LockService extends JobIntentService {
             }
         }
     }
+
+    private void vibrateItBaby() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((Vibrator) Objects.requireNonNull(getSystemService(VIBRATOR_SERVICE))).vibrate(VibrationEffect.createOneShot(vibrateTime, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(vibrateTime);
+        }
+    }
+
     private boolean isActiveAdmin() {
         return mDPM.isAdminActive(mDeviceAdmin);
     }
