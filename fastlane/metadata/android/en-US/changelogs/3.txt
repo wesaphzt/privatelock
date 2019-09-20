@@ -1,0 +1,4 @@
+- Fix for background service < Android 8.0/Oreo
+- Add option for haptic feedback (vibration) on lock trigger
+- Reworked animation logic
+- Fix 'License' and 'Bug report' links on about page
