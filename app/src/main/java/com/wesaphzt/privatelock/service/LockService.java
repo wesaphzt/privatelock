@@ -178,11 +178,10 @@ public class LockService extends JobIntentService {
                     break;
             }
         } else {
-            Toast.makeText(context, "Something went wrong...", Toast.LENGTH_LONG).show();
+            return LockService.START_REDELIVER_INTENT;
         }
 
-
-        return LockService.START_STICKY;
+        return LockService.START_REDELIVER_INTENT;
     }
 
     @Override
