@@ -141,6 +141,79 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rlStatTitles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_margin"
+            android:layout_marginTop="@dimen/activity_margin_small"
+            android:layout_marginEnd="@dimen/activity_margin">
+
+            <TextView
+                android:id="@+id/tvLastBreachValueTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_last_breach_value_title"
+                android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/tvAvgBreachValueTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvLastBreachValueTitle"
+                android:text="@string/stats_avg_breach_value_title"
+                android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/tvHighestBreachValueTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvAvgBreachValueTitle"
+                android:text="@string/stats_highest_breach_value_title"
+                android:textSize="@dimen/_10sdp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlStatValues"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_margin"
+            android:layout_marginTop="@dimen/activity_margin_small"
+            android:layout_marginEnd="@dimen/activity_margin"
+            android:layout_toEndOf="@id/rlStatTitles">
+
+            <TextView
+                android:id="@+id/tvLastBreachValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_zero"
+                android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/tvAvgBreachValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvLastBreachValue"
+                android:text="@string/stats_zero"
+                android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/tvHighestBreachValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvAvgBreachValue"
+                android:text="@string/stats_zero"
+                android:textSize="@dimen/_10sdp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/rlCircle"
             android:layout_width="wrap_content"

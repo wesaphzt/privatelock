@@ -15,6 +15,12 @@
     <string name="main_lock_sensitivity_title_arrow">→</string>
     <string name="sensitivity_value">Value: %1$s</string>
 
+    <!--stats-->
+    <string name="stats_last_breach_value_title">Last Breach Value:</string>
+    <string name="stats_avg_breach_value_title">Avg. Breach Value:</string>
+    <string name="stats_highest_breach_value_title">Highest Breach Value:</string>
+    <string name="stats_zero">0</string>
+
     <!--intro-->
     <string name="slider_page_one_title">@string/app_name</string>
     <string name="slider_page_one_desc">Private Lock, the perfect companion to help protect your phone privacy and security.</string>

@@ -40,6 +40,8 @@ import com.wesaphzt.privatelock.receivers.DeviceAdminReceiver;
 import com.wesaphzt.privatelock.service.LockService;
 import com.wesaphzt.privatelock.widget.LockWidgetProvider;
 
+import java.util.Locale;
+
 import static com.wesaphzt.privatelock.service.LockService.CHANNEL_ID;
 import static com.wesaphzt.privatelock.service.LockService.DEFAULT_SENSITIVITY;
 import static com.wesaphzt.privatelock.service.LockService.activeListener;
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean mInitialized;
     private static SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    private final float NOISE = (float) 2.0;
 
     private SensorEventListener mActiveListener;
 
@@ -74,21 +75,22 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRunning = false;
     private boolean isHit = false;
 
+    //stats
+    private TextView tvLastBreachValue;
+    private TextView tvAvgBreachValue;
+    private TextView tvHighestBreachValue;
+
+    private int triggerCount = 0;
+    private float avgBreachValueTotal = 0;
+    private double highestBreach = 0;
+
     private Circle circle;
     private Circle circle_bg;
-    //circle bg color
-    private int circleBgR = 240; private int circleBgG = 240; private int circleBgB = 240;
     //circle color
     private int circleDefaultR = 88; private int circleDefaultG = 186; private int circleDefaultB = 255;
-    //circle lock color
-    private int circleLockR = 88; private int circleLockG = 255; private int circleLockB = 135;
     int animationDuration = 220;
 
     CircleAngleAnimation animation;
-
-    //first run
-    final private String PREF_VERSION_CODE_KEY = "VERSION_CODE";
-    final private int DOESNT_EXIST = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //animation
         circle = findViewById(R.id.circle);
         circle_bg = findViewById(R.id.circle_bg);
 
@@ -158,9 +161,18 @@ public class MainActivity extends AppCompatActivity {
         CircleAngleAnimation animation = new CircleAngleAnimation(circle_bg, 360);
         //initial animation
         animation.setDuration(500);
-        circle_bg.setColor(circleBgR,circleBgG,circleBgB);
+        //circle bg color
+        int circleBgR = 240;
+        int circleBgG = 240;
+        int circleBgB = 240;
+        circle_bg.setColor(circleBgR, circleBgG, circleBgB);
 
         circle_bg.startAnimation(animation);
+
+        //stats
+        tvLastBreachValue = findViewById(R.id.tvLastBreachValue);
+        tvAvgBreachValue = findViewById(R.id.tvAvgBreachValue);
+        tvHighestBreachValue = findViewById(R.id.tvHighestBreachValue);
 
         //shared prefs
         try {
@@ -180,6 +192,10 @@ public class MainActivity extends AppCompatActivity {
                 isRunning = false;
                 isHit = false;
                 circle.setColor(circleDefaultR, circleDefaultG, circleDefaultB);
+                //reset stat variables
+                triggerCount = 0;
+                avgBreachValueTotal = 0;
+                highestBreach = 0;
             }
         };
 
@@ -388,7 +404,10 @@ public class MainActivity extends AppCompatActivity {
         //get current version code
         int currentVersionCode = BuildConfig.VERSION_CODE;
         //get saved version code
+        int DOESNT_EXIST = -1;
         int savedVersionCode = DOESNT_EXIST;
+        //first run
+        String PREF_VERSION_CODE_KEY = "VERSION_CODE";
         try {
             savedVersionCode = this.prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
         } catch (Exception e) {
@@ -423,6 +442,7 @@ public class MainActivity extends AppCompatActivity {
             float deltaY = Math.abs(mLastY - y);
             float deltaZ = Math.abs(mLastZ - z);
 
+            float NOISE = (float) 2.0;
             if (deltaX < NOISE) deltaX = (float) 0.0;
             if (deltaY < NOISE) deltaY = (float) 0.0;
             if (deltaZ < NOISE) deltaZ = (float) 0.0;
@@ -438,8 +458,14 @@ public class MainActivity extends AppCompatActivity {
             if (total >= mSensitivity) {
                 //lock screen threshold hit
 
+                stats(total);
+
                 if(!isHit) {
                     CircleAngleAnimation anim = new CircleAngleAnimation(circle, 360);
+                    //circle lock color
+                    int circleLockR = 88;
+                    int circleLockG = 255;
+                    int circleLockB = 135;
                     circle.setColor(circleLockR, circleLockG, circleLockB);
                     anim.setDuration(animationDuration);
                     //set lock color
@@ -466,5 +492,18 @@ public class MainActivity extends AppCompatActivity {
                 circle.startAnimation(animation);
             }
         }
+    }
+
+    private void stats(float total) {
+        tvLastBreachValue.setText(String.format(Locale.ENGLISH, "%.1f", (double) total));
+
+        if(total == 0 || total > highestBreach) {
+            highestBreach = total;
+        }
+        tvHighestBreachValue.setText(String.format(Locale.ENGLISH, "%.1f", highestBreach));
+
+        triggerCount += 1;
+        avgBreachValueTotal += total;
+        tvAvgBreachValue.setText(String.format(Locale.ENGLISH, "%.1f", avgBreachValueTotal / triggerCount));
     }
 }
