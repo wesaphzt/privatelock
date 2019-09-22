@@ -47,7 +47,6 @@ public class LockService extends JobIntentService {
     private float mLastX, mLastY, mLastZ;
     public static boolean mInitialized;
     public static SensorManager mSensorManager;
-    private final float NOISE = (float) 2.0;
     public static Sensor mAccelerometer;
 
     public static SensorEventListener activeListener;
@@ -83,7 +82,6 @@ public class LockService extends JobIntentService {
 
     //vibrate
     boolean isHaptic = false;
-    private final int vibrateTime = 100;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -97,6 +95,7 @@ public class LockService extends JobIntentService {
             LockWidgetProvider lockWidgetProvider = new LockWidgetProvider();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
+            assert action != null;
             switch (action) {
                 case ACTION_START_FOREGROUND_SERVICE:
                     presenceReceiver = new PresenceReceiver();
@@ -233,6 +232,7 @@ public class LockService extends JobIntentService {
             float deltaY = Math.abs(mLastY - y);
             float deltaZ = Math.abs(mLastZ - z);
 
+            float NOISE = (float) 2.0;
             if (deltaX < NOISE) deltaX = (float) 0.0;
             if (deltaY < NOISE) deltaY = (float) 0.0;
             if (deltaZ < NOISE) deltaZ = (float) 0.0;
@@ -279,6 +279,7 @@ public class LockService extends JobIntentService {
     }
 
     private void vibrateItBaby() {
+        int vibrateTime = 100;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ((Vibrator) Objects.requireNonNull(getSystemService(VIBRATOR_SERVICE))).vibrate(VibrationEffect.createOneShot(vibrateTime, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
